@@ -1,40 +1,38 @@
-import { Container, Sprite, Texture } from "pixijs";
+import { Sprite, Texture } from "pixijs";
 import { Vector } from "vecti";
 import { GameConfig } from "../configs/gameConfigs";
 import { AppController } from "../controllers/AppController";
+import { Helper } from "../generic/Helper";
 
-export class Particle extends Container {
-  private mTexture: Texture;
-  private mSprite: Sprite;
-  private mScale: number;
+export class Particle extends Sprite {
+  //   private mTexture: Texture;
+  //   private mSprite: Sprite;
+  //   private mScale: number;
   private mVelocity: Vector;
   private mExplodeHeight: number;
   private mToExplode: boolean = false;
   private mExploded: boolean = false;
   private mFade: boolean = false;
-  constructor(texture: Texture, scale: number) {
+  private mExplodeCallback: Function | null = null;
+  constructor(spriteOrTexture: string | Texture) {
     super();
-    this.mTexture = texture;
-    this.mSprite = new Sprite(this.mTexture);
-    this.mScale = scale;
-    this.mSprite.scale.set(this.mScale, this.mScale);
+    // this.mTexture = texture;
+    this.texture = Helper.getSpriteTexture(spriteOrTexture);
+    // this.mSprite = new Sprite(this.mTexture);
+    // this.mScale = scale;
+    // this.mSprite.scale.set(this.mScale, this.mScale);
     this.mVelocity = new Vector(0, 0);
     this.mExplodeHeight = 0.4 + Math.random() * 0.5;
   }
 
   reset(texture: Texture, scale: number) {
-    this.mSprite.alpha = 1;
-    this.mSprite.scale.x = scale;
-    this.mSprite.scale.y = scale;
-    this.mSprite.texture = texture;
+    this.alpha = 1;
+    this.texture = texture;
+    this.scale.set(scale, scale);
     this.mVelocity = new Vector(0, 0);
     this.mToExplode = false;
     this.mExploded = false;
     this.mFade = false;
-  }
-
-  getSprite(): Sprite {
-    return this.mSprite;
   }
 
   setFade(isFade: boolean) {
@@ -42,8 +40,7 @@ export class Particle extends Container {
   }
 
   setPosition(pos: Vector) {
-    this.mSprite.position.x = pos.x;
-    this.mSprite.position.y = pos.y;
+    this.position.set(pos.x, pos.y);
   }
 
   setVelocity(velocity: Vector) {
@@ -54,29 +51,37 @@ export class Particle extends Container {
     this.mToExplode = isToExplode;
   }
 
+  setExplodeCallback(callback: Function) {
+    this.mExplodeCallback = callback;
+  }
+
   update() {
-    this.mSprite.position.x += this.mVelocity.x;
-    this.mSprite.position.y += this.mVelocity.y;
+    this.position.x += this.mVelocity.x;
+    this.position.y += this.mVelocity.y;
     //   this.mVelocity.y += GameConfig.GAME_PARTICLES.GRAVITY; //gravity;
     this.mVelocity.add(new Vector(0, GameConfig.GAME_PARTICLES.GRAVITY));
     if (this.mToExplode && !this.mExploded) {
       // explode
-      if (
-        this.mSprite.position.y <
-        AppController.height * this.mExplodeHeight
-      ) {
-        this.mSprite.alpha = 0;
+      if (this.position.y < AppController.height * this.mExplodeHeight) {
+        this.alpha = 0;
         this.mExploded = true;
+        if (this.mExplodeCallback) {
+          this.mExplodeCallback(
+            new Vector(this.position.x, this.position.y),
+            this.texture,
+            this.scale.x
+          );
+        }
         // explode(
-        //   this.mSprite.position,
-        //   this.mSprite.texture,
-        //   this.mSprite.scale.x
+        //     new Vector(this.position.x, this.position.y),
+        //     this.texture,
+        //     this.scale.x
         // );
       }
     }
 
     if (this.mFade) {
-      this.mSprite.alpha -= 0.01;
+      this.alpha -= 0.01;
     }
   }
 }

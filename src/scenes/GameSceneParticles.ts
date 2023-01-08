@@ -41,9 +41,7 @@ export class GameSceneParticles extends Container implements IScene {
     this.init();
   }
 
-  public onEnable(): void {
-    // GameController.getInstance().onGameSceneLoadComplete();
-  }
+  public onEnable(): void {}
 
   private init() {
     this.addGameTitle();
@@ -52,9 +50,6 @@ export class GameSceneParticles extends Container implements IScene {
 
     this.initTextures();
     this.launchParticle();
-    // this.loop();
-
-    // this.addParticles();
   }
 
   private addGameTitle(): void {
@@ -63,7 +58,7 @@ export class GameSceneParticles extends Container implements IScene {
     this.mlabelTitle.anchor.set(0.5, 0.5);
     this.mlabelTitle.x = AppController.width / 2;
     this.mlabelTitle.y = this.mlabelTitle.height / 2;
-    this.addChild(this.mlabelTitle);
+    this.mContainer.addChild(this.mlabelTitle);
   }
 
   private addBackButtonButton(): void {
@@ -74,7 +69,9 @@ export class GameSceneParticles extends Container implements IScene {
     button.x = button.width / 2;
     button.y = button.height / 2;
     button.setButtonText("Back");
-    this.addChild(button);
+    this.mContainer.addChild(button);
+    button.sortableChildren = true;
+    button.zIndex = 100;
   }
 
   private onBackButtonPress(): void {
@@ -98,7 +95,7 @@ export class GameSceneParticles extends Container implements IScene {
     let particle: Particle | null = null;
     // check for a used particle (alpha <= 0)
     for (let i = 0, l = this.mParticles.length; i < l; i++) {
-      if (this.mParticles[i].getSprite().alpha <= 0) {
+      if (this.mParticles[i].alpha <= 0) {
         particle = this.mParticles[i];
         break;
       }
@@ -110,13 +107,14 @@ export class GameSceneParticles extends Container implements IScene {
     }
 
     // otherwise create a new particle
-    particle = new Particle(texture, scale);
+    particle = new Particle(texture);
     this.mParticles.push(particle);
-    this.mContainer.addChild(particle.getSprite());
+    particle.setExplodeCallback(this.explode.bind(this));
+    this.mContainer.addChild(particle);
     return particle;
   }
 
-  explode = (position: Vector, texture: Texture, scale: number) => {
+  explode(position: Vector, texture: Texture, scale: number): void {
     const steps = 8 + Math.round(Math.random() * 6);
     const radius = 2 + Math.random() * 4;
     for (let i = 0; i < steps; i++) {
@@ -129,18 +127,24 @@ export class GameSceneParticles extends Container implements IScene {
       particle.setPosition(position);
       particle.setVelocity(new Vector(x, y));
     }
-  };
+  }
 
   launchParticle(): void {
     const particle = this.getParticle(
       this.mTextures[this.mCurrentTexture],
       Math.random() * 0.5
     );
+
+    // update current texture flag
     this.mCurrentTexture++;
     if (this.mCurrentTexture > 9) this.mCurrentTexture = 0;
+
+    // set particle position
     particle.setPosition(
       new Vector(Math.random() * AppController.width, AppController.height)
     );
+
+    // set particle velocity
     const speed = AppController.height * 0.01;
     particle.setVelocity(
       new Vector(
@@ -148,24 +152,17 @@ export class GameSceneParticles extends Container implements IScene {
         -speed + Math.random() * -1
       )
     );
+
+    // update particle as explodable
     particle.setToExplode(true);
 
-    // launch a new particle
-    // setTimeout(this.launchParticle, 200 + Math.random() * 600);
+    // now launch a new particle after some delay
     if (!this.mIsGameStopped) {
       setTimeout(() => {
         this.launchParticle();
       }, 200 + Math.random() * 600);
     }
   }
-
-  // loop(): void {
-  //   requestAnimationFrame(this.loop.bind(this));
-  //   for (let i = 0, l = this.mParticles.length; i < l; i++) {
-  //     this.mParticles[i].update();
-  //   }
-  //   AppController.getApp().renderer.render(this.mContainer);
-  // }
 
   update(framesPassed: number): void {
     framesPassed;
@@ -188,7 +185,7 @@ export class GameSceneParticles extends Container implements IScene {
     this.mTextFPS.anchor.set(0.5, 0.5);
     this.mTextFPS.x = AppController.width - this.mTextFPS.width - 20;
     this.mTextFPS.y = this.mTextFPS.height / 2;
-    this.addChild(this.mTextFPS);
+    this.mContainer.addChild(this.mTextFPS);
     this.mTextFPS.zIndex = 100;
   }
 
@@ -200,6 +197,14 @@ export class GameSceneParticles extends Container implements IScene {
   }
   public removeAllChildren(): void {
     this.removeChild();
+    for (let i = 0, l = this.mParticles.length; i < l; i++) {
+      if (this.mParticles[i]) {
+        this.mParticles[i].removeFromParent();
+      }
+    }
+    this.mContainer.removeChild();
+    this.mContainer.removeFromParent();
+    this.mParticles.length = 0;
     this.mlabelTitle?.removeFromParent();
     this.children.forEach((value) => {
       if (value) {
