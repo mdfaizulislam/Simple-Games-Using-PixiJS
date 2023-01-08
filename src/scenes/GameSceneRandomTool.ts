@@ -80,7 +80,7 @@ export class GameSceneRandomTool extends Container implements IScene {
   }
 
   public get name() {
-    return "GameScene";
+    return "Random Tool";
   }
 
   public showFPS(): void {

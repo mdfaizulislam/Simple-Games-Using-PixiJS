@@ -217,7 +217,7 @@ export class GameSceneReverseStack extends Container implements IScene {
   }
 
   public get name() {
-    return "GameScene";
+    return "Reverse Stack";
   }
 
   public showFPS(): void {
