@@ -16,6 +16,7 @@ import { SoundController } from "../controllers/SoundController";
 import { Helper } from "../generic/Helper";
 import { IScene } from "../generic/IScene";
 import { Logger } from "../generic/Logger";
+import { GameSceneParticles } from "./GameSceneParticles";
 import { GameSceneRandomTool } from "./GameSceneRandomTool";
 import { GameSceneReverseStack } from "./GameSceneReverseStack";
 
@@ -114,7 +115,10 @@ export class LobbyScene extends Container implements IScene {
    * open challenge there. Particles - make a demo that shows an awesome fire effect. Please keep number of images low (max 10
    * sprites on screen at once). Feel free to use existing libraries how you would use them in a real project.
    */
-  public playParticles(): void {}
+  public playParticles(): void {
+    let gameScene = new GameSceneParticles();
+    AppController.changeScene(gameScene);
+  }
 
   public update(framesPassed: number): void {
     framesPassed;
