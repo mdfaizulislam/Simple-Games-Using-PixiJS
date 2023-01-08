@@ -12,4 +12,8 @@ export class GameConfig {
     DELAY_BETWEEN_CARD_MOVE: 1,
     CARD_MOVE_DURATION: 2,
   };
+
+  public static GAME_PARTICLES = {
+    GRAVITY: 0.03,
+  };
 }
