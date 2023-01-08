@@ -75,7 +75,7 @@ export class GameSceneReverseStack extends Container implements IScene {
 
   private addGameTitle(): void {
     this.mLogger.genericLog("addGameTitle");
-    this.mlabelTitle = Helper.getLabelWithBasicFont("GameScene");
+    this.mlabelTitle = Helper.getLabelWithBasicFont("Reverse Stack");
     this.mlabelTitle.anchor.set(0.5, 0.5);
     this.mlabelTitle.x = AppController.width / 2;
     this.mlabelTitle.y = this.mlabelTitle.height / 2;

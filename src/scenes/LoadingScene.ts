@@ -87,7 +87,11 @@ export class LoadingScene extends Container implements IScene {
 
   public removeAllChildren(): void {
     this.loaderBar.removeFromParent();
-    this.mLogger.genericLog(this.removeChild());
-    this.mLogger.Log("removeAllChildren");
+    this.removeChild();
+    this.children.forEach((child) => {
+      if (child) {
+        child.removeFromParent();
+      }
+    });
   }
 }

@@ -25,13 +25,6 @@ export class AssetsConfig implements AssetInitOptions {
           buttonGreenDisabled: "./sprites/buttons/buttonGreenDisabled.png",
         },
       },
-      {
-        name: "sounds",
-        assets: {
-          bgm: "./sounds/bgm.ogg",
-          click1: "./sounds/click1.ogg",
-        },
-      },
     ],
   };
 }
