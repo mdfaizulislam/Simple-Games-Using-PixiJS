@@ -12,9 +12,6 @@
   "author": "Faizul",
   "license": "ISC",
   "dependencies": {
-    "@pixi/assets": "^7.0.5",
-    "@pixi/core": "^7.0.5",
-    "@pixi/sound": "^5.0.0",
     "gsap": "^3.11.4",
     "pixijs": "^7.0.5",
     "vecti": "^2.1.39"

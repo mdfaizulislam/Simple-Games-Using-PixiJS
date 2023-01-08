@@ -12,7 +12,6 @@ import { Button } from "../components/Button";
 import { Constants } from "../constants";
 import { AppController } from "../controllers/AppController";
 import { GameController } from "../controllers/GameController";
-import { SoundController } from "../controllers/SoundController";
 import { Helper } from "../generic/Helper";
 import { IScene } from "../generic/IScene";
 import { Logger } from "../generic/Logger";
@@ -33,7 +32,6 @@ export class LobbyScene extends Container implements IScene {
   public onEnable(): void {}
 
   private init() {
-    SoundController.getInstance().playBackgroundMusic();
     this.addLobbyTitle();
     this.addLobbyButtons();
     this.showFPS();
