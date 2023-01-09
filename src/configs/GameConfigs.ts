@@ -19,5 +19,9 @@ export class GameConfig {
 
   public static GAME_RANDOM_TOOL = {
     INTERVAL_MS: 2000,
+    PATTERN: "123123123", // 1: text, 2: sprite, 3: texture, so don't add other things to parrten
+    TOTAL_COMBS: 83,
+    MIN_FONT_SIZE: 24,
+    MAX_FONT_SIZE: 60,
   };
 }

@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "gsap": "^3.11.4",
+    "js-combinatorics": "^2.1.1",
     "pixijs": "^7.0.5",
     "vecti": "^2.1.39"
   },

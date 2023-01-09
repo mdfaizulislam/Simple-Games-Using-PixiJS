@@ -35,6 +35,17 @@ export class Helper {
     return basicText;
   }
 
+  public static getLabelWithFontSize(text: string, fontSize: number): Text {
+    const style: TextStyle = new TextStyle({
+      fontFamily: "Arial",
+      fontSize: fontSize,
+      // fill: 0xff1010,
+      align: "center",
+    });
+    const basicText: Text = new Text(text, style);
+    return basicText;
+  }
+
   public static getSpriteTexture(spriteOrTexture: string | Texture): Texture {
     let texture;
     if (typeof spriteOrTexture === "string" && spriteOrTexture.length > 0) {
@@ -105,7 +116,7 @@ export class Helper {
    * @param max
    * @returns number
    */
-  public static generateRandomNumber(min: number, max: number): number {
+  public static getRandomNumber(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 

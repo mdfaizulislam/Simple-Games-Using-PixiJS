@@ -9,6 +9,7 @@
  *
  */
 
+import { Combination } from "js-combinatorics";
 import { Container, Sprite, Text } from "pixijs";
 import { Button } from "../components/Button";
 import { RandomTool } from "../components/RandomTool";
@@ -26,15 +27,22 @@ export class GameSceneRandomTool extends Container implements IScene {
   private mTextFPS: Text | null = null;
   private mIsGameStopped: boolean;
   private mContainer: Container;
+  private mCombs: Combination<string>;
+  private mTotalCombs: number;
   constructor() {
     super();
-    this.mLogger = new Logger("GameSceneReverseStack", true);
+    this.mLogger = new Logger("GameSceneReverseStack", false);
     this.mIsGameStopped = false;
     this.sortableChildren = true;
     this.mContainer = new Container();
     this.mContainer.sortableChildren = true;
     this.addChild(this.mContainer);
-
+    let str = GameConfig.GAME_RANDOM_TOOL.PATTERN;
+    this.mCombs = new Combination(str, 3);
+    this.mTotalCombs = GameConfig.GAME_RANDOM_TOOL.TOTAL_COMBS;
+    this.mLogger.Log("Pattern: " + str);
+    this.mLogger.Log("Nth " + this.mCombs.nth(this.mTotalCombs));
+    Math.pow(str.length, 3);
     this.init();
   }
 
@@ -80,6 +88,7 @@ export class GameSceneRandomTool extends Container implements IScene {
   }
 
   startShowingRandomContent(): void {
+    this.generateRandomTool();
     setInterval(
       this.generateRandomTool.bind(this),
       GameConfig.GAME_RANDOM_TOOL.INTERVAL_MS
@@ -90,20 +99,79 @@ export class GameSceneRandomTool extends Container implements IScene {
     if (!AppController.visible) {
       return;
     }
-    let contents: any[] = [];
-    contents.push("Hello World");
-    contents.push(Sprite.from(this.getRandomEmojiName()));
-    contents.push(Helper.getSpriteTexture(this.getRandomEmojiName()));
-    let randomTool = new RandomTool(contents);
+
+    let minFontSize: number = GameConfig.GAME_RANDOM_TOOL.MIN_FONT_SIZE;
+    let maxFontSize: number = GameConfig.GAME_RANDOM_TOOL.MAX_FONT_SIZE;
+    this.mLogger.Log("font size, min: " + minFontSize + " max: " + maxFontSize);
+    let randomFontSize: number = Helper.getRandomNumber(
+      minFontSize,
+      maxFontSize
+    );
+    let contents = this.getRandomContentArray();
+    let randomTool = new RandomTool(randomFontSize, contents);
+    // randomTool.scale.set(0.85, 0.85);
+    let offset = 10;
+    let posMinX = randomTool.width / 2 + offset;
+    let posMaxX = AppController.width - randomTool.width / 2 - offset;
+    let posMinY = randomTool.height / 2 + offset;
+    let posMaxY = AppController.height - randomTool.height / 2 - offset;
     randomTool.position.set(
-      AppController.width * Math.random(),
-      AppController.height * Math.random()
+      Helper.getRandomNumber(posMinX, posMaxX),
+      Helper.getRandomNumber(posMinY, posMaxY)
     );
     this.mContainer.addChild(randomTool);
   }
 
+  getRandomContentArray(): any[] {
+    let contents: any[] = [];
+
+    // add two random pattern
+    let pattern: string =
+      this.mCombs.nth(Helper.getRandomInt(this.mTotalCombs)) +
+      "," +
+      this.mCombs.nth(Helper.getRandomInt(this.mTotalCombs));
+
+    // split into array
+    let patternArr = pattern.split(",");
+
+    // choose content array length and pick content
+    let totalItems: number = Helper.getRandomNumber(2, 5);
+    for (let i = 0; i < totalItems; i++) {
+      let num = Number(patternArr.at(i));
+      contents.push(this.getRandomContent(num));
+    }
+
+    // return
+    return contents;
+  }
+
+  getRandomContent(flag: number): any {
+    let content: any;
+    switch (flag) {
+      case 1:
+        // return string
+        content = Helper.getRandomString(Helper.getRandomNumber(2, 5));
+        break;
+      case 2:
+        // return sprite
+        content = Sprite.from(this.getRandomEmojiName());
+        break;
+      case 3:
+        // return texture
+        content = new Sprite(
+          Helper.getSpriteTexture(this.getRandomEmojiName())
+        );
+        break;
+      default:
+        // return sprite
+        content = Sprite.from(this.getRandomEmojiName());
+        break;
+    }
+    return content;
+  }
+
   getRandomEmojiName(): string {
-    return "emoji" + (Math.floor(Math.random() * 9) + 1);
+    return "emoji" + Helper.getRandomNumber(1, 10);
   }
 
   update(framesPassed: number): void {
