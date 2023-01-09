@@ -6,9 +6,13 @@ Instructions to run PixiJS instant HTML5 game:
 2. clone https://github.com/mdfaizulislam/Simple-Games-Using-PixiJS.git repo
 3. open terminal and go to project directory
 4. install all npm packages by hitting following in terminal
+
    npm install
+
 5. now enter following command in terminal to start project running locally
+
    npm start
+
 6. after doing step 6, one will notice the following similar message in terminal
 
    <i> [webpack-dev-server] Project is running at:
