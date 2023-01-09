@@ -16,4 +16,8 @@ export class GameConfig {
   public static GAME_PARTICLES = {
     GRAVITY: 0.03,
   };
+
+  public static GAME_RANDOM_TOOL = {
+    INTERVAL_MS: 2000,
+  };
 }
