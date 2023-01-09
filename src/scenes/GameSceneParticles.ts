@@ -50,6 +50,11 @@ export class GameSceneParticles extends Container implements IScene {
 
     this.initTextures();
     this.launchParticle();
+
+    document.addEventListener(
+      "visibilitychange",
+      this.onVisibilityChange.bind(this)
+    );
   }
 
   private addGameTitle(): void {
@@ -153,7 +158,7 @@ export class GameSceneParticles extends Container implements IScene {
     particle.setToExplode(true);
 
     // now launch a new particle after some delay
-    if (!this.mIsGameStopped) {
+    if (!this.mIsGameStopped && AppController.visible) {
       setTimeout(() => {
         this.launchParticle();
       }, 200 + Math.random() * 600);
@@ -161,6 +166,9 @@ export class GameSceneParticles extends Container implements IScene {
   }
 
   update(framesPassed: number): void {
+    if (!AppController.visible) {
+      return;
+    }
     framesPassed;
     if (this.mTextFPS) {
       this.mTextFPS.text =
@@ -170,6 +178,12 @@ export class GameSceneParticles extends Container implements IScene {
     for (let i = 0, l = this.mParticles.length; i < l; i++) {
       this.mParticles[i].update();
     }
+  }
+
+  private onVisibilityChange(): void {
+    const isVisible = !document.hidden;
+    this.mLogger.Log("GameVisibility: " + (isVisible ? "yes" : "no"));
+    this.launchParticle();
   }
 
   public get name() {
@@ -189,6 +203,7 @@ export class GameSceneParticles extends Container implements IScene {
     this.mIsGameStopped = true;
     this.mIsGameStopped;
     this.removeAllListeners();
+    document.removeEventListener("visibilitychange", this.onVisibilityChange);
     this.removeAllChildren();
   }
   public removeAllChildren(): void {

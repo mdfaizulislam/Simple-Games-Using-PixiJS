@@ -56,9 +56,11 @@ export class Particle extends Sprite {
   }
 
   update() {
+    if (!AppController.visible) {
+      return;
+    }
     this.position.x += this.mVelocity.x;
     this.position.y += this.mVelocity.y;
-    //   this.mVelocity.y += GameConfig.GAME_PARTICLES.GRAVITY; //gravity;
     this.mVelocity.add(new Vector(0, GameConfig.GAME_PARTICLES.GRAVITY));
     if (this.mToExplode && !this.mExploded) {
       // explode
@@ -72,11 +74,6 @@ export class Particle extends Sprite {
             this.scale.x
           );
         }
-        // explode(
-        //     new Vector(this.position.x, this.position.y),
-        //     this.texture,
-        //     this.scale.x
-        // );
       }
     }
 

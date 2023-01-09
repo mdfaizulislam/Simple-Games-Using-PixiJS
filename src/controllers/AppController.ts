@@ -18,6 +18,7 @@ export class AppController {
   // Safely store variables for our game
   private static app: Application;
   private static currentScene: IScene;
+  public static visible: boolean;
 
   // Width and Height are read-only after creation (for now)
   private static _width: number;
@@ -57,15 +58,23 @@ export class AppController {
       height: height,
     });
 
+    AppController.visible = true;
     // Add the ticker
     AppController.app.ticker.add(AppController.update);
     // AppController.app.ticker.
 
     // listen for the browser telling us that the screen size changed
     window.addEventListener("resize", AppController.resize);
+    document.addEventListener("visibilitychange", this.onVisibilityChange);
 
     // call it manually once so we are sure we are the correct size after starting
     AppController.resize();
+  }
+
+  private static onVisibilityChange(): void {
+    const isVisible = !document.hidden;
+    AppController.mLogger.Log("AppVisibility: " + (isVisible ? "yes" : "no"));
+    AppController.visible = isVisible;
   }
 
   public static resize(): void {
