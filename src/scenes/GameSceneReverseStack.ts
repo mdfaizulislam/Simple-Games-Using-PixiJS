@@ -81,7 +81,7 @@ export class GameSceneReverseStack extends Container implements IScene {
     let backButtonWidth: number = this.mButton ? this.mButton.width : 100;
     this.mlabelTitle.x = this.mlabelTitle.width / 2 + backButtonWidth;
     this.mlabelTitle.y = this.mlabelTitle.height / 2;
-    this.mContainer.addChild(this.mlabelTitle);
+    this.addChild(this.mlabelTitle);
     this.mlabelTitle.zIndex = 100;
   }
 
