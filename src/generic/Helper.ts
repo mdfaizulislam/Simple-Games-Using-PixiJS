@@ -87,6 +87,36 @@ export class Helper {
 
     return Math.hypot(a, b);
   }
+
+  public static getRandomString(length: number): string {
+    let result = "";
+    let characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let charactersLength = characters.length;
+    for (let i = 0; i < length; i += 1) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  }
+
+  /**
+   * Defining a custom function which returns a random number between min and max, including min and max
+   * @param min
+   * @param max
+   * @returns number
+   */
+  public static generateRandomNumber(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
+  /**
+   * generates random number 0 to max-1,
+   * @param max
+   * @returns number
+   */
+  public static getRandomInt(max: number) {
+    return Math.floor(Math.random() * max);
+  }
   /*
   private isOverlapped(a: Rectangle, b: Rectangle): boolean {
     // assume `a` and `b` are instances of Rectangle
