@@ -9,8 +9,10 @@
  *
  */
 
-import { Container, Text } from "pixijs";
+import { Container, Sprite, Text } from "pixijs";
 import { Button } from "../components/Button";
+import { RandomTool } from "../components/RandomTool";
+import { GameConfig } from "../configs/gameConfigs";
 import { AppController } from "../controllers/AppController";
 import { Helper } from "../generic/Helper";
 import { IScene } from "../generic/IScene";
@@ -20,6 +22,7 @@ import { LobbyScene } from "./lobbyScene";
 export class GameSceneRandomTool extends Container implements IScene {
   private mLogger: Logger;
   private mlabelTitle: Text | null = null;
+  private mButton: Button | null = null;
   private mTextFPS: Text | null = null;
   private mIsGameStopped: boolean;
   private mContainer: Container;
@@ -40,35 +43,67 @@ export class GameSceneRandomTool extends Container implements IScene {
   }
 
   private init() {
-    this.addGameTitle();
     this.addBackButtonButton();
+    this.addGameTitle();
     this.showFPS();
+
+    this.startShowingRandomContent();
   }
 
   private addGameTitle(): void {
     this.mLogger.genericLog("addGameTitle");
     this.mlabelTitle = Helper.getLabelWithBasicFont("Random Tool");
     this.mlabelTitle.anchor.set(0.5, 0.5);
-    this.mlabelTitle.x = AppController.width / 2;
+    let backButtonWidth: number = this.mButton ? this.mButton.width : 100;
+    this.mlabelTitle.x = this.mlabelTitle.width / 2 + backButtonWidth + 20;
     this.mlabelTitle.y = this.mlabelTitle.height / 2;
-    this.addChild(this.mlabelTitle);
+    this.mContainer.addChild(this.mlabelTitle);
+    this.mlabelTitle.zIndex = 100;
   }
 
   private addBackButtonButton(): void {
-    let button: Button = Button.createButton("buttonBack");
-    button.setCallback(this.onBackButtonPress.bind(this));
-    button.anchor.set(0.5, 0.5);
-    button.scale.set(0.65, 0.65);
-    button.x = button.width / 2;
-    button.y = button.height / 2;
-    button.setButtonText("Back");
-    this.addChild(button);
+    this.mButton = Button.createButton("buttonBack");
+    this.mButton.setCallback(this.onBackButtonPress.bind(this));
+    this.mButton.anchor.set(0.5, 0.5);
+    this.mButton.scale.set(0.65, 0.65);
+    this.mButton.x = this.mButton.width / 2;
+    this.mButton.y = this.mButton.height / 2;
+    this.mButton.setButtonText("Back");
+    this.mContainer.addChild(this.mButton);
+    this.mButton.zIndex = 100;
   }
 
   private onBackButtonPress(): void {
     this.mLogger.Log("onbackButtonPress");
     this.mIsGameStopped = true;
     AppController.changeScene(new LobbyScene());
+  }
+
+  startShowingRandomContent(): void {
+    setInterval(
+      this.generateRandomTool.bind(this),
+      GameConfig.GAME_RANDOM_TOOL.INTERVAL_MS
+    );
+  }
+
+  generateRandomTool(): void {
+    if (!AppController.visible) {
+      return;
+    }
+    let contents: any[] = [];
+    contents.push("Hello World");
+    contents.push(Sprite.from(this.getRandomEmojiName()));
+    contents.push(Helper.getSpriteTexture(this.getRandomEmojiName()));
+    let randomTool = new RandomTool(contents);
+    randomTool.position.set(
+      AppController.width * Math.random(),
+      AppController.height * Math.random()
+    );
+    this.mContainer.addChild(randomTool);
+  }
+
+  getRandomEmojiName(): string {
+    return "emoji" + (Math.floor(Math.random() * 9) + 1);
   }
 
   update(framesPassed: number): void {

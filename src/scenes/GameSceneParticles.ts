@@ -21,6 +21,7 @@ import { LobbyScene } from "./lobbyScene";
 
 export class GameSceneParticles extends Container implements IScene {
   private mLogger: Logger;
+  private mButton: Button | null = null;
   private mlabelTitle: Text | null = null;
   private mTextFPS: Text | null = null;
   private mIsGameStopped: boolean;
@@ -44,8 +45,8 @@ export class GameSceneParticles extends Container implements IScene {
   public onEnable(): void {}
 
   private init() {
-    this.addGameTitle();
     this.addBackButtonButton();
+    this.addGameTitle();
     this.showFPS();
 
     this.initTextures();
@@ -61,22 +62,24 @@ export class GameSceneParticles extends Container implements IScene {
     this.mLogger.genericLog("addGameTitle");
     this.mlabelTitle = Helper.getLabelWithBasicFont("Particles");
     this.mlabelTitle.anchor.set(0.5, 0.5);
-    this.mlabelTitle.x = AppController.width / 2;
+    let backButtonWidth: number = this.mButton ? this.mButton.width : 100;
+    this.mlabelTitle.x = this.mlabelTitle.width / 2 + backButtonWidth + 20;
     this.mlabelTitle.y = this.mlabelTitle.height / 2;
     this.mContainer.addChild(this.mlabelTitle);
+    this.mlabelTitle.zIndex = 100;
   }
 
   private addBackButtonButton(): void {
-    let button: Button = Button.createButton("buttonBack");
-    button.setCallback(this.onBackButtonPress.bind(this));
-    button.anchor.set(0.5, 0.5);
-    button.scale.set(0.65, 0.65);
-    button.x = button.width / 2;
-    button.y = button.height / 2;
-    button.setButtonText("Back");
-    this.mContainer.addChild(button);
-    button.sortableChildren = true;
-    button.zIndex = 100;
+    this.mButton = Button.createButton("buttonBack");
+    this.mButton.setCallback(this.onBackButtonPress.bind(this));
+    this.mButton.anchor.set(0.5, 0.5);
+    this.mButton.scale.set(0.65, 0.65);
+    this.mButton.x = this.mButton.width / 2;
+    this.mButton.y = this.mButton.height / 2;
+    this.mButton.setButtonText("Back");
+    this.mContainer.addChild(this.mButton);
+    this.mButton.sortableChildren = true;
+    this.mButton.zIndex = 100;
   }
 
   private onBackButtonPress(): void {
@@ -217,6 +220,7 @@ export class GameSceneParticles extends Container implements IScene {
     this.mContainer.removeFromParent();
     this.mParticles.length = 0;
     this.mlabelTitle?.removeFromParent();
+    this.mButton?.removeFromParent();
     this.children.forEach((value) => {
       if (value) {
         value.removeFromParent();

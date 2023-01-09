@@ -39,7 +39,7 @@ export class LobbyScene extends Container implements IScene {
   private addLobbyTitle(): void {
     let labelTitle: Text = Helper.getLabelWithBasicFont("LobbyScene");
     labelTitle.anchor.set(0.5, 0.5);
-    labelTitle.x = AppController.width / 2;
+    labelTitle.x = labelTitle.width / 2 + 20;
     labelTitle.y = labelTitle.height / 2;
     this.addChild(labelTitle);
   }
