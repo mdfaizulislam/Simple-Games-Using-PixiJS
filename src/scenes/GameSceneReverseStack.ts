@@ -108,7 +108,7 @@ export class GameSceneReverseStack extends Container implements IScene {
   }
 
   public addCardStack(callback?: Function): void {
-    let totalCard: number = GameConfig.GAME_SWAP_STACK_CONFIGS.TOTAL_CARDS;
+    let totalCard: number = GameConfig.GAME_REVERSE_STACK_CONFIGS.TOTAL_CARDS;
     // this.mLogger.Log("TotalCards: " + totalCard);
     for (let i = 0; i < totalCard; i += 1) {
       let card: CardSprite = new CardSprite("card");
@@ -179,7 +179,7 @@ export class GameSceneReverseStack extends Container implements IScene {
           // do nothing
         }
         this.startGame();
-      }, GameConfig.GAME_SWAP_STACK_CONFIGS.DELAY_BETWEEN_CARD_MOVE);
+      }, GameConfig.GAME_REVERSE_STACK_CONFIGS.DELAY_BETWEEN_CARD_MOVE);
     }
   }
 

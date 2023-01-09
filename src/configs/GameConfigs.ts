@@ -7,7 +7,7 @@
  */
 
 export class GameConfig {
-  public static GAME_SWAP_STACK_CONFIGS = {
+  public static GAME_REVERSE_STACK_CONFIGS = {
     TOTAL_CARDS: 144,
     DELAY_BETWEEN_CARD_MOVE: 1,
     CARD_MOVE_DURATION: 2,

@@ -65,12 +65,12 @@ export class CardSprite extends Sprite implements INode {
     let tween = gsap.to(this, {
       x: this.mNewPositionOnStack.x,
       y: this.mNewPositionOnStack.y,
-      duration: GameConfig.GAME_SWAP_STACK_CONFIGS.CARD_MOVE_DURATION,
+      duration: GameConfig.GAME_REVERSE_STACK_CONFIGS.CARD_MOVE_DURATION,
     });
     tween.eventCallback("onComplete", this.onSwitchStackEnd.bind(this));
     setTimeout(() => {
       this.zIndex = this.mNewZIndex;
-    }, (GameConfig.GAME_SWAP_STACK_CONFIGS.CARD_MOVE_DURATION * 1000) / 3);
+    }, (GameConfig.GAME_REVERSE_STACK_CONFIGS.CARD_MOVE_DURATION * 1000) / 3);
   }
 
   onSwitchStackEnd(): void {
