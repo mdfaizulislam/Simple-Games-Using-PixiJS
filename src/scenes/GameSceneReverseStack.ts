@@ -79,7 +79,7 @@ export class GameSceneReverseStack extends Container implements IScene {
     this.mlabelTitle = Helper.getLabelWithBasicFont("Reverse Stack");
     this.mlabelTitle.anchor.set(0.5, 0.5);
     let backButtonWidth: number = this.mButton ? this.mButton.width : 100;
-    this.mlabelTitle.x = this.mlabelTitle.width / 2 + backButtonWidth + 20;
+    this.mlabelTitle.x = this.mlabelTitle.width / 2 + backButtonWidth;
     this.mlabelTitle.y = this.mlabelTitle.height / 2;
     this.mContainer.addChild(this.mlabelTitle);
     this.mlabelTitle.zIndex = 100;
@@ -227,7 +227,7 @@ export class GameSceneReverseStack extends Container implements IScene {
   public showFPS(): void {
     this.mTextFPS = Helper.getLabelWithBasicFont("FPS: ");
     this.mTextFPS.anchor.set(0.5, 0.5);
-    this.mTextFPS.x = AppController.width - this.mTextFPS.width - 20;
+    this.mTextFPS.x = AppController.width - this.mTextFPS.width - 5;
     this.mTextFPS.y = this.mTextFPS.height / 2;
     this.addChild(this.mTextFPS);
     this.mTextFPS.zIndex = 100;
