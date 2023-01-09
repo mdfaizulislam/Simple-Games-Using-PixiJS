@@ -80,13 +80,9 @@ export class GameSceneParticles extends Container implements IScene {
     AppController.changeScene(new LobbyScene());
   }
 
-  async initTextures(): Promise<void> {
-    for (let i = 0; i < 10; i++) {
-      this.mTextures.push(
-        await Texture.fromURL(
-          `https://s3-us-west-2.amazonaws.com/s.cdpn.io/53148/rp-${i}.png?123`
-        )
-      );
+  initTextures(): void {
+    for (let i = 1; i < 11; i++) {
+      this.mTextures.push(Helper.getSpriteTexture("emoji" + i));
     }
   }
 

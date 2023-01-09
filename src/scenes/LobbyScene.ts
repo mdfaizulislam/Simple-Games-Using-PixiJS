@@ -11,7 +11,6 @@ import { Container, Text } from "pixijs";
 import { Button } from "../components/Button";
 import { Constants } from "../constants";
 import { AppController } from "../controllers/AppController";
-import { GameController } from "../controllers/GameController";
 import { Helper } from "../generic/Helper";
 import { IScene } from "../generic/IScene";
 import { Logger } from "../generic/Logger";
@@ -95,7 +94,6 @@ export class LobbyScene extends Container implements IScene {
    */
   public playReverseStack(): void {
     let gameScene = new GameSceneReverseStack();
-    GameController.getInstance().setGameScene(gameScene);
     AppController.changeScene(gameScene);
   }
 
