@@ -25,8 +25,6 @@ export class AssetsConfig implements AssetInitOptions {
           emoji8: "./sprites/emoji8.png",
           emoji9: "./sprites/emoji9.png",
           emoji10: "./sprites/emoji10.png",
-          circle: "./sprites/circle.png",
-          ghost: "./sprites/ghost.png",
           buttonBack: "./sprites/buttons/buttonBack.png",
           buttonGreenNormal: "./sprites/buttons/buttonGreenNormal.png",
           buttonGreenHover: "./sprites/buttons/buttonGreenHover.png",
