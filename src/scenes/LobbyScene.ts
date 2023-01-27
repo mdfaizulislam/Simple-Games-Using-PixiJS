@@ -10,17 +10,17 @@
 import { Button } from "../components/Button";
 import { Constants } from "../constants";
 import { AppController } from "../controllers/AppController";
+import { GenericScene } from "../generic/GenericScene";
 import { Logger } from "../generic/Logger";
 import { GameSceneParticles } from "./GameSceneParticles";
 import { GameSceneRandomTool } from "./GameSceneRandomTool";
 import { GameSceneReverseStack } from "./GameSceneReverseStack";
-import { GenericScene } from "./GenericScene";
 
 export class LobbyScene extends GenericScene {
   private mLogger: Logger;
   private mLobbyButtons: Button[] = [];
   constructor() {
-    super(); // Mandatory! This calls the superclass constructor.
+    super();
     this.mLogger = new Logger("LobbyScene", true);
     this.sceneName = "Lobby Scene";
     this.init();
@@ -32,7 +32,6 @@ export class LobbyScene extends GenericScene {
     this.addGameTitle();
     this.showFPS();
     this.addLobbyButtons();
-    this.showFPS();
   }
 
   private addLobbyButtons(): void {
@@ -58,7 +57,7 @@ export class LobbyScene extends GenericScene {
     }
   }
 
-  onGameButtonPress(gameId: string): void {
+  public onGameButtonPress(gameId: string): void {
     this.mLogger.Log("onLobbyButtonPress: " + gameId);
     // buttonRef.setCallback(null);
     Constants.GAME_IDS;
@@ -107,11 +106,10 @@ export class LobbyScene extends GenericScene {
     AppController.changeScene(gameScene);
   }
 
-  onDisable(): void {
+  public onDisable(): void {
     this.removeAll();
   }
 
-  public onDestry(): void {}
   public removeAll(): void {
     this.removeChild();
     this.mTextFPS?.removeFromParent();

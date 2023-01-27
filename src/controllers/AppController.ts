@@ -7,8 +7,9 @@
  */
 
 import { Application } from "pixijs";
+import { GenericScene } from "../generic/GenericScene";
 import { Logger } from "../generic/Logger";
-import { GenericScene } from "../scenes/GenericScene";
+import { LobbyScene } from "../scenes/LobbyScene";
 
 export class AppController {
   private constructor() {
@@ -133,6 +134,10 @@ export class AppController {
     AppController.app.stage.addChild(AppController.currentScene);
     AppController.mLogger.Log(newScene.sceneName);
     AppController.currentScene.onEnable();
+  }
+
+  public static openLobbyScene(): void {
+    AppController.changeScene(new LobbyScene());
   }
 
   // This update will be called by a pixi ticker and tell the scene that a tick happened

@@ -14,9 +14,9 @@ import { Container, Sprite } from "pixijs";
 import { RandomTool } from "../components/RandomTool";
 import { GameConfig } from "../configs/gameConfigs";
 import { AppController } from "../controllers/AppController";
+import { GenericScene } from "../generic/GenericScene";
 import { Helper } from "../generic/Helper";
 import { Logger } from "../generic/Logger";
-import { GenericScene } from "./GenericScene";
 
 export class GameSceneRandomTool extends GenericScene {
   private mLogger: Logger;
@@ -41,11 +41,12 @@ export class GameSceneRandomTool extends GenericScene {
     this.init();
   }
 
-  public onEnable(): void {
-    // GameController.getInstance().onGameSceneLoadComplete();
-  }
+  public onEnable(): void {}
 
   private init() {
+    this.addBackButtonButton();
+    this.addGameTitle();
+    this.showFPS();
     this.startShowingRandomContent();
   }
 

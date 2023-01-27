@@ -13,9 +13,9 @@ import { Texture } from "pixijs";
 import { Vector } from "vecti";
 import { Particle } from "../components/Particle";
 import { AppController } from "../controllers/AppController";
+import { GenericScene } from "../generic/GenericScene";
 import { Helper } from "../generic/Helper";
 import { Logger } from "../generic/Logger";
-import { GenericScene } from "./GenericScene";
 
 export class GameSceneParticles extends GenericScene {
   private mLogger: Logger;

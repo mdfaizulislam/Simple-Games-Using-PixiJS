@@ -10,8 +10,8 @@
 import { Container, Graphics } from "pixijs";
 import { AppController } from "../controllers/AppController";
 import { AssetsController } from "../controllers/AssetsController";
+import { GenericScene } from "../generic/GenericScene";
 import { Logger } from "../generic/Logger";
-import { GenericScene } from "./GenericScene";
 
 export class LoadingScene extends GenericScene {
   private mLogger: Logger;
@@ -20,8 +20,7 @@ export class LoadingScene extends GenericScene {
   private loaderBarFill: Graphics;
 
   constructor() {
-    super(); // Mandatory! This calls the superclass constructor.
-
+    super();
     this.mLogger = new Logger("LoadingScene", true, true);
     this.sceneName = "LoadingScene";
 
@@ -68,8 +67,6 @@ export class LoadingScene extends GenericScene {
 
   private onAppLoadingComplete(): void {
     this.mLogger.Log("App Loading Complete");
-    this.removeChild(this.loaderBar);
-
     this.onBackButtonPress();
   }
 

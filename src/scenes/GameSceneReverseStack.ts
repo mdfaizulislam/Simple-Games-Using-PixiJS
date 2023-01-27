@@ -6,13 +6,12 @@
  *
  */
 
-import { Container } from "pixijs";
 import { Vector } from "vecti";
 import { CardSprite } from "../components/CardSprite";
 import { GameConfig } from "../configs/gameConfigs";
 import { AppController } from "../controllers/AppController";
+import { GenericScene } from "../generic/GenericScene";
 import { Logger } from "../generic/Logger";
-import { GenericScene } from "./GenericScene";
 
 export class GameSceneReverseStack extends GenericScene {
   private mLogger: Logger;
@@ -22,7 +21,6 @@ export class GameSceneReverseStack extends GenericScene {
   private mCardSize: Vector;
   private mIsProcessingLeftStack: boolean;
   private mCurrentCardZIndex: number;
-  private mContainer: Container;
   constructor() {
     super();
     this.sceneName = "ReverseStack";
@@ -31,9 +29,6 @@ export class GameSceneReverseStack extends GenericScene {
       CardSprite.from("card").width,
       CardSprite.from("card").height
     );
-    this.mContainer = new Container();
-    this.mContainer.sortableChildren = true;
-    this.addChild(this.mContainer);
     this.mIsProcessingLeftStack = false;
     this.mIsSceneStopped = false;
     this.mCurrentCardZIndex = 0;
@@ -64,6 +59,8 @@ export class GameSceneReverseStack extends GenericScene {
     this.startGame();
   }
 
+  onEnable(): void {}
+
   public getCardSize(): Vector {
     return this.mCardSize;
   }
@@ -79,7 +76,7 @@ export class GameSceneReverseStack extends GenericScene {
         this.mStackPositions[0].y - i * (card.height * 0.1)
       );
       card.sortableChildren = true;
-      this.mContainer.addChild(card);
+      this.addChild(card);
       card.zIndex = this.mCurrentCardZIndex;
       this.incrementZIndexOfCards();
       this.mLeftStackCards.push(card);
@@ -172,8 +169,6 @@ export class GameSceneReverseStack extends GenericScene {
   private incrementZIndexOfCards(): void {
     this.mCurrentCardZIndex += 1;
   }
-
-  onEnable(): void {}
 
   onDisable(): void {
     this.mIsSceneStopped = true;

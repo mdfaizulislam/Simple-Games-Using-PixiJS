@@ -1,11 +1,10 @@
 import { Container, Text } from "pixijs";
 import { Button } from "../components/Button";
 import { AppController } from "../controllers/AppController";
-import { Helper } from "../generic/Helper";
-import { IScene } from "../generic/IScene";
-import { LobbyScene } from "./LobbyScene";
+import { Helper } from "./Helper";
+import { IScene } from "./IScene";
 
-export class GenericScene extends Container implements IScene {
+export abstract class GenericScene extends Container implements IScene {
   private _name!: string;
   public mlabelTitle: Text | null = null;
   public mButton: Button | null = null;
@@ -28,7 +27,7 @@ export class GenericScene extends Container implements IScene {
   protected addGameTitle(): void {
     this.mlabelTitle = Helper.getLabelWithBasicFont(this.sceneName);
     this.mlabelTitle.anchor.set(0.5, 0.5);
-    let backButtonWidth: number = this.mButton ? this.mButton.width : 100;
+    let backButtonWidth: number = this.mButton ? this.mButton.width : 10;
     this.mlabelTitle.x = this.mlabelTitle.width / 2 + backButtonWidth;
     this.mlabelTitle.y = this.mlabelTitle.height / 2;
     this.addChild(this.mlabelTitle);
@@ -49,7 +48,7 @@ export class GenericScene extends Container implements IScene {
 
   protected onBackButtonPress(): void {
     this.mIsSceneStopped = true;
-    AppController.changeScene(new LobbyScene());
+    AppController.openLobbyScene();
   }
 
   public showFPS(): void {
@@ -69,15 +68,16 @@ export class GenericScene extends Container implements IScene {
     }
   }
 
-  onEnable(): void {}
+  abstract onEnable(): void;
 
-  onDisable(): void {}
-  removeAll(): void {}
+  abstract onDisable(): void;
+  abstract removeAll(): void;
 
   /**
    * remove all listeners, childrens, stop all schedulers etc here;
    */
   public onDestry(): void {
+    this.mIsSceneStopped = true;
     this.onDisable();
   }
 }
