@@ -9,36 +9,24 @@
  *
  */
 
-import { Container, Text, Texture } from "pixijs";
+import { Texture } from "pixijs";
 import { Vector } from "vecti";
-import { Button } from "../components/Button";
 import { Particle } from "../components/Particle";
 import { AppController } from "../controllers/AppController";
 import { Helper } from "../generic/Helper";
-import { IScene } from "../generic/IScene";
 import { Logger } from "../generic/Logger";
-import { LobbyScene } from "./lobbyScene";
+import { GenericScene } from "./GenericScene";
 
-export class GameSceneParticles extends Container implements IScene {
+export class GameSceneParticles extends GenericScene {
   private mLogger: Logger;
-  private mButton: Button | null = null;
-  private mlabelTitle: Text | null = null;
-  private mTextFPS: Text | null = null;
-  private mIsGameStopped: boolean;
-  private mContainer: Container;
   private mTextures: Texture[] = [];
   private mParticles: Particle[] = [];
   private mCurrentTexture: number;
   constructor() {
     super();
     this.mLogger = new Logger("GameSceneParticles", true);
-    this.mIsGameStopped = false;
-    this.sortableChildren = true;
-    this.mContainer = new Container();
-    this.mContainer.sortableChildren = true;
-    this.addChild(this.mContainer);
+    this.sceneName = "Particles";
     this.mCurrentTexture = 0;
-
     this.init();
   }
 
@@ -56,36 +44,6 @@ export class GameSceneParticles extends Container implements IScene {
       "visibilitychange",
       this.onVisibilityChange.bind(this)
     );
-  }
-
-  private addGameTitle(): void {
-    this.mLogger.genericLog("addGameTitle");
-    this.mlabelTitle = Helper.getLabelWithBasicFont("Particles");
-    this.mlabelTitle.anchor.set(0.5, 0.5);
-    let backButtonWidth: number = this.mButton ? this.mButton.width : 100;
-    this.mlabelTitle.x = this.mlabelTitle.width / 2 + backButtonWidth;
-    this.mlabelTitle.y = this.mlabelTitle.height / 2;
-    this.mContainer.addChild(this.mlabelTitle);
-    this.mlabelTitle.zIndex = 100;
-  }
-
-  private addBackButtonButton(): void {
-    this.mButton = Button.createButton("buttonBack");
-    this.mButton.setCallback(this.onBackButtonPress.bind(this));
-    this.mButton.anchor.set(0.5, 0.5);
-    this.mButton.scale.set(0.65, 0.65);
-    this.mButton.x = this.mButton.width / 2;
-    this.mButton.y = this.mButton.height / 2;
-    this.mButton.setButtonText("Back");
-    this.mContainer.addChild(this.mButton);
-    this.mButton.sortableChildren = true;
-    this.mButton.zIndex = 100;
-  }
-
-  private onBackButtonPress(): void {
-    this.mLogger.Log("onbackButtonPress");
-    this.mIsGameStopped = true;
-    AppController.changeScene(new LobbyScene());
   }
 
   initTextures(): void {
@@ -114,7 +72,7 @@ export class GameSceneParticles extends Container implements IScene {
     particle = new Particle(texture);
     this.mParticles.push(particle);
     particle.setExplodeCallback(this.explode.bind(this));
-    this.mContainer.addChild(particle);
+    this.addChild(particle);
     return particle;
   }
 
@@ -161,14 +119,14 @@ export class GameSceneParticles extends Container implements IScene {
     particle.setToExplode(true);
 
     // now launch a new particle after some delay
-    if (!this.mIsGameStopped && AppController.visible) {
+    if (!this.mIsSceneStopped && AppController.visible) {
       setTimeout(() => {
         this.launchParticle();
       }, 200 + Math.random() * 600);
     }
   }
 
-  update(framesPassed: number): void {
+  override update(framesPassed: number): void {
     if (!AppController.visible) {
       return;
     }
@@ -189,35 +147,19 @@ export class GameSceneParticles extends Container implements IScene {
     this.launchParticle();
   }
 
-  public get name() {
-    return "GameSceneParticles";
-  }
-
-  public showFPS(): void {
-    this.mTextFPS = Helper.getLabelWithBasicFont("FPS: ");
-    this.mTextFPS.anchor.set(0.5, 0.5);
-    this.mTextFPS.x = AppController.width - this.mTextFPS.width - 5;
-    this.mTextFPS.y = this.mTextFPS.height / 2;
-    this.mContainer.addChild(this.mTextFPS);
-    this.mTextFPS.zIndex = 100;
-  }
-
-  public onDestry(): void {
-    this.mIsGameStopped = true;
-    this.mIsGameStopped;
-    this.removeAllListeners();
+  onDisable(): void {
+    this.mIsSceneStopped = true;
     document.removeEventListener("visibilitychange", this.onVisibilityChange);
-    this.removeAllChildren();
+    this.removeAll();
   }
-  public removeAllChildren(): void {
+
+  public removeAll(): void {
     this.removeChild();
     for (let i = 0, l = this.mParticles.length; i < l; i++) {
       if (this.mParticles[i]) {
         this.mParticles[i].removeFromParent();
       }
     }
-    this.mContainer.removeChild();
-    this.mContainer.removeFromParent();
     this.mParticles.length = 0;
     this.mlabelTitle?.removeFromParent();
     this.mButton?.removeFromParent();

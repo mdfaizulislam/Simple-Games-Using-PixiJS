@@ -11,13 +11,12 @@ import { DisplayObject } from "pixijs";
 // Also, this could be in its own file...
 export interface IScene extends DisplayObject {
   update(framesPassed: number): void;
-  get name(): string;
 
   onEnable(): void;
+  onDisable(): void;
 
   /**
    * remove all listeners, childrens, stop all schedulers etc here;
    */
   onDestry(): void;
-  removeAllChildren(): void;
 }

@@ -10,29 +10,24 @@
  */
 
 import { Combination } from "js-combinatorics";
-import { Container, Sprite, Text } from "pixijs";
-import { Button } from "../components/Button";
+import { Container, Sprite } from "pixijs";
 import { RandomTool } from "../components/RandomTool";
 import { GameConfig } from "../configs/gameConfigs";
 import { AppController } from "../controllers/AppController";
 import { Helper } from "../generic/Helper";
-import { IScene } from "../generic/IScene";
 import { Logger } from "../generic/Logger";
-import { LobbyScene } from "./lobbyScene";
+import { GenericScene } from "./GenericScene";
 
-export class GameSceneRandomTool extends Container implements IScene {
+export class GameSceneRandomTool extends GenericScene {
   private mLogger: Logger;
-  private mlabelTitle: Text | null = null;
-  private mButton: Button | null = null;
-  private mTextFPS: Text | null = null;
-  private mIsGameStopped: boolean;
   private mContainer: Container;
   private mCombs: Combination<string>;
   private mTotalCombs: number;
   constructor() {
     super();
-    this.mLogger = new Logger("GameSceneReverseStack", false);
-    this.mIsGameStopped = false;
+    this.mLogger = new Logger("RandomTool", false);
+    this.sceneName = "Random Tool";
+    this.mIsSceneStopped = false;
     this.sortableChildren = true;
     this.mContainer = new Container();
     this.mContainer.sortableChildren = true;
@@ -51,40 +46,7 @@ export class GameSceneRandomTool extends Container implements IScene {
   }
 
   private init() {
-    this.addBackButtonButton();
-    this.addGameTitle();
-    this.showFPS();
-
     this.startShowingRandomContent();
-  }
-
-  private addGameTitle(): void {
-    this.mLogger.genericLog("addGameTitle");
-    this.mlabelTitle = Helper.getLabelWithBasicFont("Random Tool");
-    this.mlabelTitle.anchor.set(0.5, 0.5);
-    let backButtonWidth: number = this.mButton ? this.mButton.width : 100;
-    this.mlabelTitle.x = this.mlabelTitle.width / 2 + backButtonWidth;
-    this.mlabelTitle.y = this.mlabelTitle.height / 2;
-    this.mContainer.addChild(this.mlabelTitle);
-    this.mlabelTitle.zIndex = 100;
-  }
-
-  private addBackButtonButton(): void {
-    this.mButton = Button.createButton("buttonBack");
-    this.mButton.setCallback(this.onBackButtonPress.bind(this));
-    this.mButton.anchor.set(0.5, 0.5);
-    this.mButton.scale.set(0.65, 0.65);
-    this.mButton.x = this.mButton.width / 2;
-    this.mButton.y = this.mButton.height / 2;
-    this.mButton.setButtonText("Back");
-    this.mContainer.addChild(this.mButton);
-    this.mButton.zIndex = 100;
-  }
-
-  private onBackButtonPress(): void {
-    this.mLogger.Log("onbackButtonPress");
-    this.mIsGameStopped = true;
-    AppController.changeScene(new LobbyScene());
   }
 
   startShowingRandomContent(): void {
@@ -174,34 +136,12 @@ export class GameSceneRandomTool extends Container implements IScene {
     return "emoji" + Helper.getRandomNumber(1, 10);
   }
 
-  update(framesPassed: number): void {
-    framesPassed;
-    if (this.mTextFPS) {
-      this.mTextFPS.text =
-        "FPS: " + AppController.getApp().ticker.FPS.toFixed(2);
-    }
+  public onDisable(): void {
+    this.mIsSceneStopped = true;
+    this.mIsSceneStopped;
+    this.removeAll();
   }
-
-  public get name() {
-    return "Random Tool";
-  }
-
-  public showFPS(): void {
-    this.mTextFPS = Helper.getLabelWithBasicFont("FPS: ");
-    this.mTextFPS.anchor.set(0.5, 0.5);
-    this.mTextFPS.x = AppController.width - this.mTextFPS.width - 5;
-    this.mTextFPS.y = this.mTextFPS.height / 2;
-    this.addChild(this.mTextFPS);
-    this.mTextFPS.zIndex = 100;
-  }
-
-  public onDestry(): void {
-    this.mIsGameStopped = true;
-    this.mIsGameStopped;
-    this.removeAllListeners();
-    this.removeAllChildren();
-  }
-  public removeAllChildren(): void {
+  public removeAll(): void {
     this.removeChild();
     this.mlabelTitle?.removeFromParent();
     this.children.forEach((value) => {

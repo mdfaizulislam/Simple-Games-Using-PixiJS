@@ -10,11 +10,10 @@
 import { Container, Graphics } from "pixijs";
 import { AppController } from "../controllers/AppController";
 import { AssetsController } from "../controllers/AssetsController";
-import { IScene } from "../generic/IScene";
 import { Logger } from "../generic/Logger";
-import { LobbyScene } from "./lobbyScene";
+import { GenericScene } from "./GenericScene";
 
-export class LoadingScene extends Container implements IScene {
+export class LoadingScene extends GenericScene {
   private mLogger: Logger;
   private loaderBar: Container;
   private loaderBarBoder: Graphics;
@@ -24,6 +23,7 @@ export class LoadingScene extends Container implements IScene {
     super(); // Mandatory! This calls the superclass constructor.
 
     this.mLogger = new Logger("LoadingScene", true, true);
+    this.sceneName = "LoadingScene";
 
     // console.log(this.screenWidth, this.screenHeight);
     const loaderBarWidth = AppController.width * 0.8; // just an auxiliar variable
@@ -70,22 +70,14 @@ export class LoadingScene extends Container implements IScene {
     this.mLogger.Log("App Loading Complete");
     this.removeChild(this.loaderBar);
 
-    AppController.changeScene(new LobbyScene());
+    this.onBackButtonPress();
   }
 
-  public update(framesPassed: number): void {
-    framesPassed;
-  }
-  public get name() {
-    return "LoadingScene";
+  public onDisable(): void {
+    this.removeAll();
   }
 
-  public onDestry(): void {
-    this.removeAllListeners();
-    this.removeAllChildren();
-  }
-
-  public removeAllChildren(): void {
+  public removeAll(): void {
     this.loaderBar.removeFromParent();
     this.removeChild();
     this.children.forEach((child) => {

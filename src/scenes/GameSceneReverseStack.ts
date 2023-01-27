@@ -6,32 +6,26 @@
  *
  */
 
-import { Container, Text } from "pixijs";
+import { Container } from "pixijs";
 import { Vector } from "vecti";
-import { Button } from "../components/Button";
 import { CardSprite } from "../components/CardSprite";
 import { GameConfig } from "../configs/gameConfigs";
 import { AppController } from "../controllers/AppController";
-import { Helper } from "../generic/Helper";
-import { IScene } from "../generic/IScene";
 import { Logger } from "../generic/Logger";
-import { LobbyScene } from "./lobbyScene";
+import { GenericScene } from "./GenericScene";
 
-export class GameSceneReverseStack extends Container implements IScene {
+export class GameSceneReverseStack extends GenericScene {
   private mLogger: Logger;
-  private mlabelTitle: Text | null = null;
-  private mButton: Button | null = null;
   private mLeftStackCards: CardSprite[] = [];
   private mRightStackCards: CardSprite[] = [];
   private mStackPositions: Vector[] = [];
-  private mTextFPS: Text | null = null;
   private mCardSize: Vector;
   private mIsProcessingLeftStack: boolean;
-  private mIsGameStopped: boolean;
   private mCurrentCardZIndex: number;
   private mContainer: Container;
   constructor() {
     super();
+    this.sceneName = "ReverseStack";
     this.mLogger = new Logger("GameSceneReverseStack", true);
     this.mCardSize = new Vector(
       CardSprite.from("card").width,
@@ -41,17 +35,13 @@ export class GameSceneReverseStack extends Container implements IScene {
     this.mContainer.sortableChildren = true;
     this.addChild(this.mContainer);
     this.mIsProcessingLeftStack = false;
-    this.mIsGameStopped = false;
+    this.mIsSceneStopped = false;
     this.mCurrentCardZIndex = 0;
     this.sortableChildren = true;
     this.init();
   }
 
-  public onEnable(): void {
-    // GameController.getInstance().onGameSceneLoadComplete();
-  }
-
-  private init() {
+  public init() {
     this.addBackButtonButton();
     this.addGameTitle();
     this.showFPS();
@@ -72,35 +62,6 @@ export class GameSceneReverseStack extends Container implements IScene {
     this.addCardStack();
     this.mIsProcessingLeftStack = this.getStackCurrentSize(true) != 0;
     this.startGame();
-  }
-
-  private addGameTitle(): void {
-    this.mLogger.genericLog("addGameTitle");
-    this.mlabelTitle = Helper.getLabelWithBasicFont("Reverse Stack");
-    this.mlabelTitle.anchor.set(0.5, 0.5);
-    let backButtonWidth: number = this.mButton ? this.mButton.width : 100;
-    this.mlabelTitle.x = this.mlabelTitle.width / 2 + backButtonWidth;
-    this.mlabelTitle.y = this.mlabelTitle.height / 2;
-    this.addChild(this.mlabelTitle);
-    this.mlabelTitle.zIndex = 100;
-  }
-
-  private addBackButtonButton(): void {
-    this.mButton = Button.createButton("buttonBack");
-    this.mButton.setCallback(this.onBackButtonPress.bind(this));
-    this.mButton.anchor.set(0.5, 0.5);
-    this.mButton.scale.set(0.65, 0.65);
-    this.mButton.x = this.mButton.width / 2;
-    this.mButton.y = this.mButton.height / 2;
-    this.mButton.setButtonText("Back");
-    this.mContainer.addChild(this.mButton);
-    this.mButton.zIndex = 100;
-  }
-
-  private onBackButtonPress(): void {
-    this.mLogger.Log("onbackButtonPress");
-    this.mIsGameStopped = true;
-    AppController.changeScene(new LobbyScene());
   }
 
   public getCardSize(): Vector {
@@ -127,7 +88,7 @@ export class GameSceneReverseStack extends Container implements IScene {
         callback();
       }
     }
-    this.mLogger.Log("addCardStack end- " + this.name);
+    this.mLogger.Log("addCardStack end- " + this.sceneName);
   }
 
   public addCardToStack(isLeftStack: boolean, card: CardSprite): void {
@@ -163,7 +124,7 @@ export class GameSceneReverseStack extends Container implements IScene {
   onCardMovementEnd(card: CardSprite): void {
     this.addCardToStack(!this.mIsProcessingLeftStack, card);
 
-    if (!this.mIsGameStopped) {
+    if (!this.mIsSceneStopped) {
       setTimeout(() => {
         if (
           this.mIsProcessingLeftStack &&
@@ -198,14 +159,6 @@ export class GameSceneReverseStack extends Container implements IScene {
     return newPositionOnStack;
   }
 
-  public update(framesPassed: number): void {
-    framesPassed;
-    if (this.mTextFPS) {
-      this.mTextFPS.text =
-        "FPS: " + AppController.getApp().ticker.FPS.toFixed(2);
-    }
-  }
-
   public getStackCurrentSize(isLeftStack: boolean): number {
     return isLeftStack
       ? this.mLeftStackCards.length
@@ -220,27 +173,17 @@ export class GameSceneReverseStack extends Container implements IScene {
     this.mCurrentCardZIndex += 1;
   }
 
-  public get name() {
-    return "Reverse Stack";
-  }
+  onEnable(): void {}
 
-  public showFPS(): void {
-    this.mTextFPS = Helper.getLabelWithBasicFont("FPS: ");
-    this.mTextFPS.anchor.set(0.5, 0.5);
-    this.mTextFPS.x = AppController.width - this.mTextFPS.width - 5;
-    this.mTextFPS.y = this.mTextFPS.height / 2;
-    this.addChild(this.mTextFPS);
-    this.mTextFPS.zIndex = 100;
-  }
-
-  public onDestry(): void {
-    this.mIsGameStopped = true;
+  onDisable(): void {
+    this.mIsSceneStopped = true;
     this.removeAllListeners();
-    this.removeAllChildren();
+    this.removeAll();
   }
-  public removeAllChildren(): void {
+
+  public removeAll(): void {
     this.removeChild();
-    this.mlabelTitle?.removeFromParent();
+
     this.children.forEach((value) => {
       if (value) {
         value.removeFromParent();
