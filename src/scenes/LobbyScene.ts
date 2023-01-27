@@ -7,41 +7,31 @@
  */
 
 // depenedencies
-import { Container, Text } from "pixijs";
 import { Button } from "../components/Button";
 import { Constants } from "../constants";
 import { AppController } from "../controllers/AppController";
-import { Helper } from "../generic/Helper";
-import { IScene } from "../generic/IScene";
+import { GenericScene } from "../generic/GenericScene";
 import { Logger } from "../generic/Logger";
 import { GameSceneParticles } from "./GameSceneParticles";
 import { GameSceneRandomTool } from "./GameSceneRandomTool";
 import { GameSceneReverseStack } from "./GameSceneReverseStack";
 
-export class LobbyScene extends Container implements IScene {
+export class LobbyScene extends GenericScene {
   private mLogger: Logger;
   private mLobbyButtons: Button[] = [];
-  private mTextFPS: Text | null = null;
   constructor() {
-    super(); // Mandatory! This calls the superclass constructor.
+    super();
     this.mLogger = new Logger("LobbyScene", true);
+    this.sceneName = "Lobby Scene";
     this.init();
   }
 
   public onEnable(): void {}
 
   private init() {
-    this.addLobbyTitle();
-    this.addLobbyButtons();
+    this.addGameTitle();
     this.showFPS();
-  }
-
-  private addLobbyTitle(): void {
-    let labelTitle: Text = Helper.getLabelWithBasicFont("LobbyScene");
-    labelTitle.anchor.set(0.5, 0.5);
-    labelTitle.x = labelTitle.width / 2 + 20;
-    labelTitle.y = labelTitle.height / 2;
-    this.addChild(labelTitle);
+    this.addLobbyButtons();
   }
 
   private addLobbyButtons(): void {
@@ -67,7 +57,7 @@ export class LobbyScene extends Container implements IScene {
     }
   }
 
-  onGameButtonPress(gameId: string): void {
+  public onGameButtonPress(gameId: string): void {
     this.mLogger.Log("onLobbyButtonPress: " + gameId);
     // buttonRef.setCallback(null);
     Constants.GAME_IDS;
@@ -116,32 +106,11 @@ export class LobbyScene extends Container implements IScene {
     AppController.changeScene(gameScene);
   }
 
-  public update(framesPassed: number): void {
-    framesPassed;
-    if (this.mTextFPS) {
-      this.mTextFPS.text =
-        "FPS: " + AppController.getApp().ticker.FPS.toFixed(2);
-    }
+  public onDisable(): void {
+    this.removeAll();
   }
 
-  public get name() {
-    return "LobbyScene";
-  }
-
-  public showFPS(): void {
-    this.mTextFPS = Helper.getLabelWithBasicFont("FPS: ");
-    this.mTextFPS.anchor.set(0.5, 0.5);
-    this.mTextFPS.x = AppController.width - this.mTextFPS.width - 20;
-    this.mTextFPS.y = this.mTextFPS.height / 2;
-    this.addChild(this.mTextFPS);
-    this.mTextFPS.zIndex = 100;
-  }
-
-  public onDestry(): void {
-    this.removeAllListeners();
-    this.removeAllChildren();
-  }
-  public removeAllChildren(): void {
+  public removeAll(): void {
     this.removeChild();
     this.mTextFPS?.removeFromParent();
     this.children.forEach((child) => {

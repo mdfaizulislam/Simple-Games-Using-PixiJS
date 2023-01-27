@@ -134,4 +134,6 @@ export class CardSprite extends Sprite implements INode {
   public update(framesPassed: number): void {
     framesPassed;
   }
+
+  onDisable(): void {}
 }

@@ -7,8 +7,9 @@
  */
 
 import { Application } from "pixijs";
-import { IScene } from "../generic/IScene";
+import { GenericScene } from "../generic/GenericScene";
 import { Logger } from "../generic/Logger";
+import { LobbyScene } from "../scenes/LobbyScene";
 
 export class AppController {
   private constructor() {
@@ -17,7 +18,7 @@ export class AppController {
 
   // Safely store variables for our game
   private static app: Application;
-  private static currentScene: IScene;
+  private static currentScene: GenericScene;
   public static visible: boolean;
 
   // Width and Height are read-only after creation (for now)
@@ -120,7 +121,7 @@ export class AppController {
   }
 
   // Call this function when you want to go to a new scene
-  public static changeScene(newScene: IScene): void {
+  public static changeScene(newScene: GenericScene): void {
     // Remove and destroy old scene... if we had one..
     if (AppController.currentScene) {
       AppController.app.stage.removeChild(AppController.currentScene);
@@ -131,8 +132,12 @@ export class AppController {
     // Add the new one
     AppController.currentScene = newScene;
     AppController.app.stage.addChild(AppController.currentScene);
-    AppController.mLogger.Log(newScene.name);
-    // AppController.currentScene.onEnable();
+    AppController.mLogger.Log(newScene.sceneName);
+    AppController.currentScene.onEnable();
+  }
+
+  public static openLobbyScene(): void {
+    AppController.changeScene(new LobbyScene());
   }
 
   // This update will be called by a pixi ticker and tell the scene that a tick happened
